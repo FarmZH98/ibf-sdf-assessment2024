@@ -188,31 +188,60 @@ public class App {
     public static void printPokemonCardCount() {
         // Task 2 - your code here
 
-        HashMap <String, Integer> pokemonsHashMap = new HashMap<>();
+        //use of LinkedHashMap as it is able to stable sort. In this case, the program will print out pokemon with earlier initial occurrence first, if the count is same
+        //Initial use of HashMap has been commented out, as it is not stable sorted
+        LinkedHashMap<String, Integer> pokemonLinkedHashMap = new LinkedHashMap<>();
         for(int i = 0; i<globalPokemonLists.size(); ++i) {
             List<String> pokemonStack = globalPokemonLists.get(i);
 
             for(int j=0; j<pokemonStack.size(); ++j) {
                 String currentPokemon = pokemonStack.get(j);
-                if(pokemonsHashMap.containsKey(currentPokemon)) {
-                    pokemonsHashMap.put(currentPokemon, pokemonsHashMap.get(currentPokemon) + 1);
+                if(pokemonLinkedHashMap.containsKey(currentPokemon)) {
+                    pokemonLinkedHashMap.put(currentPokemon, pokemonLinkedHashMap.get(currentPokemon) + 1);
                 } else {
-                    pokemonsHashMap.put(currentPokemon, 0);
+                    pokemonLinkedHashMap.put(currentPokemon, 0);
                 }
             }
-
         }
 
-        HashMap<String, Integer> sortedMap = 
-                            pokemonsHashMap.entrySet().stream()
-                            .sorted(Entry.<String, Integer>comparingByValue().reversed())
-                            .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
-                                                    (e1, e2) -> e1, LinkedHashMap::new));
-        int index = 0;
-        for (String key : sortedMap.keySet()) {
-            System.out.println("Pokemon " + (++index) + ": " + key + ", Cards Count: " + sortedMap.get(key));
-            if(index == 10) break;
+        //https://stackoverflow.com/questions/12184378/sorting-linkedhashmap 
+        //https://stackoverflow.com/questions/109383/sort-a-mapkey-value-by-values=> Sorting below was referred from StackOverflow
+        LinkedHashMap<String, Integer> sortedLinkedHashMap = pokemonLinkedHashMap.entrySet().stream() //set to stream
+                    .sorted(Entry.<String, Integer>comparingByValue().reversed()) //reverse order
+                    .limit(10)
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, //
+                                            (e1, e2) -> e1, LinkedHashMap::new));
+
+        Integer index = 0;
+        for (String key : sortedLinkedHashMap.keySet()) {
+            System.out.println("Pokemon " + (++index) + ": " + key + ", Cards Count: " + sortedLinkedHashMap.get(key));
         }
+
+        // HashMap <String, Integer> pokemonsHashMap = new HashMap<>();
+        // for(int i = 0; i<globalPokemonLists.size(); ++i) {
+        //     List<String> pokemonStack = globalPokemonLists.get(i);
+
+        //     for(int j=0; j<pokemonStack.size(); ++j) {
+        //         String currentPokemon = pokemonStack.get(j);
+        //         if(pokemonsHashMap.containsKey(currentPokemon)) {
+        //             pokemonsHashMap.put(currentPokemon, pokemonsHashMap.get(currentPokemon) + 1);
+        //         } else {
+        //             pokemonsHashMap.put(currentPokemon, 0);
+        //         }
+        //     }
+        // }
+
+        // HashMap<String, Integer> sortedMap = 
+        //                     pokemonsHashMap.entrySet().stream() //set to stream
+        //                     .sorted(Entry.<String, Integer>comparingByValue().reversed()) //reverse order
+        //                     .collect(Collectors.toMap(Entry::getKey, Entry::getValue, //
+        //                                             (e1, e2) -> e1, LinkedHashMap::new));
+        // int index = 0;
+
+        // for (String key : sortedMap.keySet()) {
+        //     System.out.println("Pokemon " + (++index) + ": " + key + ", Cards Count: " + sortedMap.get(key));
+        //     if(index == 10) break;
+        // }
     }
 
 }
