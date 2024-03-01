@@ -121,7 +121,7 @@ public class App {
         for(int i=0; i<pokemonsArray.length; ++i) {
             String[] pokemonAttr = pokemonsArray[i].split(" ");
             if(!(pokemonAttr[0].equals("1*") || pokemonAttr[0].equals("2*") || pokemonAttr[0].equals("3*") || pokemonAttr[0].equals("4*") || pokemonAttr[0].equals("5*") || pokemonAttr[0].equals("L*"))) {
-                System.err.println("Error in pokemon name: Pokemon should be of the following format: <1-5>* <PokemonName>");
+                System.err.println("Error in pokemon entered: Pokemon should be of the following format: <1-5/L>* <PokemonName>");
                 System.err.println("Pokemon with error: " + pokemonsArray[i] + ". Please try again.");
                 return;
             }
