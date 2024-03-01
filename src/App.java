@@ -198,7 +198,7 @@ public class App {
                 if(pokemonLinkedHashMap.containsKey(currentPokemon)) {
                     pokemonLinkedHashMap.put(currentPokemon, pokemonLinkedHashMap.get(currentPokemon) + 1);
                 } else {
-                    pokemonLinkedHashMap.put(currentPokemon, 0);
+                    pokemonLinkedHashMap.put(currentPokemon, 1);
                 }
             }
         }
