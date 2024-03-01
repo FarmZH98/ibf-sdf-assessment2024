@@ -1,13 +1,11 @@
 
 import java.io.Console;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,11 +43,6 @@ public class App {
             String input = cons.readLine("Enter your selection >");
             if (input.equals("q")) {
                 return;
-            } else if (input.equals("3")) {
-                String newPokemonStack = cons.readLine("Create a new Pokemon stack and save to a new file >\n");
-                String fileNameToSave = cons.readLine("Enter a filename to save (e.g. path/filename.csv) >\n");
-                savePokemonStack(newPokemonStack, fileNameToSave);
-                pressAnyKeyToContinue();
             } else if (input.equals("1")) {
                 String stackNumRaw = cons.readLine("Display the list of unique Pokemon in stack >\n");
                 int stackNum = Integer.parseInt(stackNumRaw);
@@ -58,6 +51,11 @@ public class App {
             } else if (input.equals("2")) {
                 String pokemon = cons.readLine("Search for the next occurrence of 5 stars Pokemon in all stacks based on entered Pokemon > \n");
                 printNext5StarsPokemon(pokemon);
+                pressAnyKeyToContinue();
+            } else if (input.equals("3")) {
+                String newPokemonStack = cons.readLine("Create a new Pokemon stack and save to a new file >\n");
+                String fileNameToSave = cons.readLine("Enter a filename to save (e.g. path/filename.csv) >\n");
+                savePokemonStack(newPokemonStack, fileNameToSave);
                 pressAnyKeyToContinue();
             } else if (input.equals("4")) {
                 printPokemonCardCount();
@@ -88,7 +86,7 @@ public class App {
     public static void printHeader() {
 
         // Task 1 - your code here
-        System.out.println("Welcome to Gaole Legend 4 Rush 2");
+        System.out.println("Welcome to Pokemon Gaole Legend 4 Rush 2");
         System.out.println("");
 
     }
@@ -114,7 +112,7 @@ public class App {
     public static void savePokemonStack(String pokemonStack, String filename) {
 
         // Task 1 - your code here
-        //added some error handling to ensure the pokemon name and number of cards per stack is correct
+        //added some error handling to ensure the pokemon name and number of cards per stack is correct (this is not asked in exam paper)
         String[] pokemonsArray = pokemonStack.split(",");
         if(pokemonsArray.length < 50) { 
             System.err.println("Error in input stack: Each stack should contain 50 cards. Please try again.");
@@ -128,6 +126,7 @@ public class App {
                 return;
             }
         }
+
         FileService fileService = new FileService();
         fileService.writeAsCSV(pokemonStack, filename);
     }
@@ -141,8 +140,8 @@ public class App {
         }
         List<String> pokemonStackToPrint = globalPokemonStackMap.get(stack);
 
-        //filter
-        HashSet<String> stackHash = new HashSet<>();
+        //filter using LinkedHashSet for maintain stability
+        LinkedHashSet<String> stackHash = new LinkedHashSet<>();
         for(int i=0; i<pokemonStackToPrint.size(); ++i) {
             stackHash.add(pokemonStackToPrint.get(i));
         }
