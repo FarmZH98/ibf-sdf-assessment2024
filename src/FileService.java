@@ -51,10 +51,12 @@ public class FileService {
 
             bw.flush();
             bw.close();
-
+            System.out.println("File saved successfully!");
         } catch (IOException e) {
+            System.err.println("An IOException occured.");
             e.printStackTrace();
         } catch (Exception e) {
+            System.err.println("An Exception occured.");
             e.printStackTrace();
         }
     }

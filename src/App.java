@@ -42,13 +42,14 @@ public class App {
         printHeader();
         while (true) {
             printMenu();
-            String input = cons.readLine("Enter your selection >").toLowerCase();
+            String input = cons.readLine("Enter your selection >");
             if (input.equals("q")) {
                 return;
             } else if (input.equals("3")) {
                 String newPokemonStack = cons.readLine("Create a new Pokemon stack and save to a new file >\n");
                 String fileNameToSave = cons.readLine("Enter a filename to save (e.g. path/filename.csv) >\n");
                 savePokemonStack(newPokemonStack, fileNameToSave);
+                pressAnyKeyToContinue();
             } else if (input.equals("1")) {
                 String stackNumRaw = cons.readLine("Display the list of unique Pokemon in stack >\n");
                 int stackNum = Integer.parseInt(stackNumRaw);
@@ -60,6 +61,7 @@ public class App {
                 pressAnyKeyToContinue();
             } else if (input.equals("4")) {
                 printPokemonCardCount();
+                pressAnyKeyToContinue();
             } else if (input.equals("clear")) {
                 clearConsole();
             } else {
@@ -112,6 +114,20 @@ public class App {
     public static void savePokemonStack(String pokemonStack, String filename) {
 
         // Task 1 - your code here
+        //added some error handling to ensure the pokemon name and number of cards per stack is correct
+        String[] pokemonsArray = pokemonStack.split(",");
+        if(pokemonsArray.length < 50) { 
+            System.err.println("Error in input stack: Each stack should contain 50 cards. Please try again.");
+            return;
+        } 
+        for(int i=0; i<pokemonsArray.length; ++i) {
+            String[] pokemonAttr = pokemonsArray[i].split(" ");
+            if(!(pokemonAttr[0].equals("1*") || pokemonAttr[0].equals("2*") || pokemonAttr[0].equals("3*") || pokemonAttr[0].equals("4*") || pokemonAttr[0].equals("5*") || pokemonAttr[0].equals("L*"))) {
+                System.err.println("Error in pokemon name: Pokemon should be of the following format: <1-5>* <PokemonName>");
+                System.err.println("Pokemon with error: " + pokemonsArray[i] + ". Please try again.");
+                return;
+            }
+        }
         FileService fileService = new FileService();
         fileService.writeAsCSV(pokemonStack, filename);
     }
