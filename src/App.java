@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 
 public class App {
@@ -41,27 +45,28 @@ public class App {
             String input = cons.readLine("Enter your selection >").toLowerCase();
             if (input.equals("q")) {
                 return;
-            } else if (input.equals("4")) {
+            } else if (input.equals("3")) {
                 String newPokemonStack = cons.readLine("Create a new Pokemon stack and save to a new file >\n");
                 String fileNameToSave = cons.readLine("Enter a filename to save (e.g. path/filename.csv) >\n");
                 savePokemonStack(newPokemonStack, fileNameToSave);
-            } else if (input.equals("2")) {
+            } else if (input.equals("1")) {
                 String stackNumRaw = cons.readLine("Display the list of unique Pokemon in stack >\n");
                 int stackNum = Integer.parseInt(stackNumRaw);
-                if(stackNum > 8 || stackNum < 1) {
-                    System.err.println("Stack number should be of a value between 1 to 8.");
-                    pressAnyKeyToContinue();
-                    continue;
-                }
                 printUniquePokemonStack(stackNum);
                 pressAnyKeyToContinue();
-            } else if (input.equals("3")) {
+            } else if (input.equals("2")) {
                 String pokemon = cons.readLine("Search for the next occurrence of 5 stars Pokemon in all stacks based on entered Pokemon > \n");
                 printNext5StarsPokemon(pokemon);
                 pressAnyKeyToContinue();
+            } else if (input.equals("4")) {
+                printPokemonCardCount();
+            } else if (input.equals("clear")) {
+                clearConsole();
+            } else {
+                System.out.println("Invalid input, please try again.");
             }
+            
         }
-        
 
     }
 
@@ -87,10 +92,11 @@ public class App {
     }
 
     public static void printMenu() {
-        System.out.println("(1) View the list of Pokemon in the selected stack");
-        System.out.println("(2) View unique list of Pokemon in the selected stack");
-        System.out.println("(3) Find next 5 stars Pokemon occurrence");
-        System.out.println("(4) Create new Pokemon stack and save (append) to csv file");
+        
+        System.out.println("(1) View unique list of Pokemon in the selected stack");
+        System.out.println("(2) Find next 5 stars Pokemon occurrence");
+        System.out.println("(3) Create new Pokemon stack and save (append) to csv file");
+        System.out.println("(4) Print distinct Pokemon and cards count");
         System.out.println("(q) to exit the program");
     }
 
@@ -113,6 +119,10 @@ public class App {
     // Task 2
     public static void printUniquePokemonStack(Integer stack) {
         // Task 2 - your code here
+        if(stack > 8 || stack < 1) {
+            System.err.println("Error: Stack number should be of a value between 1 to 8.");
+            return;
+        }
         List<String> pokemonStackToPrint = globalPokemonStackMap.get(stack);
 
         //filter
@@ -141,8 +151,8 @@ public class App {
             for(int j=0; j<pokemonStack.size(); ++j) {
                 if(pokemonStack.get(j).equals(enteredPokemon)) {
                     pokemonFoundIndex = j;
-                }
-                if(pokemonFoundIndex > -1 && pokemonStack.get(j).startsWith("5*")) {
+                    
+                } else if(pokemonFoundIndex > -1 && pokemonStack.get(j).startsWith("5*")) {
                     fiveStarPokemonFoundIndex = j;
                     break;
                 }
@@ -153,7 +163,7 @@ public class App {
             } else if (pokemonFoundIndex > -1 && fiveStarPokemonFoundIndex == -1) {
                 System.out.println("No 5 stars Pokemon found subsequently in the stack.");
             } else if (pokemonFoundIndex > -1 && fiveStarPokemonFoundIndex > -1 ) {
-                System.out.println(enteredPokemon + ">>>" + (fiveStarPokemonFoundIndex - pokemonFoundIndex) + " cards to go.");
+                System.out.println(pokemonStack.get(fiveStarPokemonFoundIndex) + ">>>" + (fiveStarPokemonFoundIndex - pokemonFoundIndex) + " cards to go.");
             }
         }
     }
@@ -161,6 +171,32 @@ public class App {
     // Task 2
     public static void printPokemonCardCount() {
         // Task 2 - your code here
+
+        HashMap <String, Integer> pokemonsHashMap = new HashMap<>();
+        for(int i = 0; i<globalPokemonLists.size(); ++i) {
+            List<String> pokemonStack = globalPokemonLists.get(i);
+
+            for(int j=0; j<pokemonStack.size(); ++j) {
+                String currentPokemon = pokemonStack.get(j);
+                if(pokemonsHashMap.containsKey(currentPokemon)) {
+                    pokemonsHashMap.put(currentPokemon, pokemonsHashMap.get(currentPokemon) + 1);
+                } else {
+                    pokemonsHashMap.put(currentPokemon, 0);
+                }
+            }
+
+        }
+
+        HashMap<String, Integer> sortedMap = 
+                            pokemonsHashMap.entrySet().stream()
+                            .sorted(Entry.<String, Integer>comparingByValue().reversed())
+                            .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+                                                    (e1, e2) -> e1, LinkedHashMap::new));
+        int index = 0;
+        for (String key : sortedMap.keySet()) {
+            System.out.println("Pokemon " + (++index) + ": " + key + ", Cards Count: " + sortedMap.get(key));
+            if(index == 10) break;
+        }
     }
 
 }
